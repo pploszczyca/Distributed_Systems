@@ -1,8 +1,9 @@
 import socket
+import struct
 import threading
-from Constants import CLOSE_MESSAGE, SERVER_IP, SERVER_PORT
-from Decoding import decodeMessageWithFrame
-from MessagesService import receiveMessage, receiveMessageUdp, sendMessageUdp
+from Constants import CLOSE_MESSAGE, MULTICAST_ADDRESS, MULTICAST_IP, MULTICAST_TTL, SERVER_ADDRESS, SERVER_IP, SERVER_PORT
+from Decoding import decodeMessage, decodeMessageWithFrame
+from MessagesService import receiveMessage, receiveMessageUdp, receiveMulticastMessage, sendMessageUdp
 
 
 def makeUserMessage(username: str, message: str):
@@ -54,6 +55,9 @@ def handleUdpConnection():
         else:
             sendMessageToOthersUdp(address, data)
 
+def handleMulticastMessages():
+    while True:
+        print(receiveMulticastMessage(multicast_socket))
 
 user_connections = {}
 user_connections_lock = threading.Lock()
@@ -61,13 +65,21 @@ user_connections_lock = threading.Lock()
 address_udp_user = {}
 
 socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-socket_tcp.bind((SERVER_IP, SERVER_PORT))
+socket_tcp.bind(SERVER_ADDRESS)
 socket_tcp.listen(True)
 
 socket_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-socket_udp.bind((SERVER_IP, SERVER_PORT))
+socket_udp.bind(SERVER_ADDRESS)
+
+multicast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+multicast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, MULTICAST_TTL)
+multicast_socket.bind(MULTICAST_ADDRESS)
+
+mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_IP), socket.INADDR_ANY)
+multicast_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
 threading.Thread(target=handleUdpConnection).start()
+threading.Thread(target=handleMulticastMessages).start()
 
 while True:
     connection, new_username = acceptAndSaveNewConnection()

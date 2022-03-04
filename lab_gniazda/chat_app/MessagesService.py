@@ -20,4 +20,9 @@ def sendMessageUdp(socket_udp: socket, message: str, address):
 def receiveMessageUdp(socket_udp: socket):
     data, address = socket_udp.recvfrom(BUFFER_SIZE)
     return encodeMessageToString(data), address
-    
+
+def sendMulticastMessage(multicast_socket: socket, message: str, address):
+    sendMessageUdp(multicast_socket, message, address)
+
+def receiveMulticastMessage(multicast_socket: socket):
+    return encodeMessageToString(multicast_socket.recv(BUFFER_SIZE))
