@@ -1,7 +1,7 @@
 import socket
 import struct
 from Constants import BUFFER_SIZE, MULTICAST_TTL
-from Decoding import encodeMessageToString
+from MessagesUtilis import encodeMessageToString
 from UdpSocketAbstract import UdpSocketAbstract
 
 

@@ -1,6 +1,6 @@
 import socket
 from Constants import BUFFER_SIZE
-from Decoding import encodeMessageToString
+from MessagesUtilis import encodeMessageToString
 from UdpSocketAbstract import UdpSocketAbstract
 
 

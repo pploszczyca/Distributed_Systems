@@ -1,7 +1,7 @@
 import socket
 
 from Constants import HEADER_SIZE
-from Decoding import decodeMessageWithFrame, encodeMessageToInt, encodeMessageToString
+from MessagesUtilis import decodeMessageWithFrame, encodeMessageToInt, encodeMessageToString
 
 
 class TcpSocket:

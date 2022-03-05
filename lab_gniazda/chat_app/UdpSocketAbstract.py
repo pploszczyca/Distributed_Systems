@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Decoding import decodeMessage
+from MessagesUtilis import decodeMessage
 
 
 class UdpSocketAbstract(ABC):

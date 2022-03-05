@@ -1,7 +1,7 @@
 from typing import Final
 
 
-SERVER_PORT: Final = 9008
+SERVER_PORT: Final = 9011
 SERVER_IP: Final = 'localhost'
 SERVER_ADDRESS: Final = (SERVER_IP, SERVER_PORT)
 MULTICAST_IP: Final = '224.1.1.1'
