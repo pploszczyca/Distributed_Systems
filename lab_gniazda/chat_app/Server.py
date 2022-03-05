@@ -1,9 +1,10 @@
 import socket
-import struct
 import threading
 from Constants import CLOSE_MESSAGE, MULTICAST_ADDRESS, MULTICAST_IP, MULTICAST_TTL, SERVER_ADDRESS, SERVER_IP, SERVER_PORT
-from Decoding import decodeMessage, decodeMessageWithFrame
-from MessagesService import receiveMessage, receiveMessageUdp, receiveMulticastMessage, sendMessageUdp
+from Decoding import decodeMessageWithFrame
+from MessagesService import receiveMessage
+from MulticastSocket import MulticastSocket
+from UdpSocket import UdpSocket
 
 
 def makeUserMessage(username: str, message: str):
@@ -45,11 +46,11 @@ def sendMessageToOthersUdp(address, message: str):
 
     for user_address in address_udp_user.keys():
         if user_address != address:
-            sendMessageUdp(socket_udp, makeUserMessage(sender_username, message), user_address)
+            udp_socket.sendMessage(makeUserMessage(sender_username, message), user_address)
 
 def handleUdpConnection():
     while True:
-        data, address = receiveMessageUdp(socket_udp)
+        data, address = udp_socket.receiveMessage()
         if address not in address_udp_user.keys():
             address_udp_user[address] = data
         else:
@@ -57,7 +58,7 @@ def handleUdpConnection():
 
 def handleMulticastMessages():
     while True:
-        print(receiveMulticastMessage(multicast_socket))
+        print(multicast_socket.receiveMessage())
 
 user_connections = {}
 user_connections_lock = threading.Lock()
@@ -68,15 +69,8 @@ socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket_tcp.bind(SERVER_ADDRESS)
 socket_tcp.listen(True)
 
-socket_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-socket_udp.bind(SERVER_ADDRESS)
-
-multicast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-multicast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, MULTICAST_TTL)
-multicast_socket.bind(MULTICAST_ADDRESS)
-
-mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_IP), socket.INADDR_ANY)
-multicast_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+udp_socket = UdpSocket(SERVER_ADDRESS, True)
+multicast_socket = MulticastSocket(MULTICAST_ADDRESS)
 
 threading.Thread(target=handleUdpConnection).start()
 threading.Thread(target=handleMulticastMessages).start()
