@@ -9,22 +9,22 @@ class TcpSocket:
         self.initSocket(server_address, is_server_socket)
 
     def initSocket(self, server_address, is_serwer_socket: bool):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
         if is_serwer_socket:
-            self.socket.bind(server_address)
-            self.socket.listen(True)
+            self.__socket.bind(server_address)
+            self.__socket.listen(True)
         else:
-            self.socket.connect(server_address)
+            self.__socket.connect(server_address)
 
     def acceptNewConnection(self):
-        connection, address = self.socket.accept()
+        connection, address = self.__socket.accept()
         is_received, new_username = self.receiveMessageFromOtherConnection(connection)
 
         return connection, new_username
 
     def receiveMessage(self):
-        return self.receiveMessageFromOtherConnection(self.socket)
+        return self.receiveMessageFromOtherConnection(self.__socket)
 
     def receiveMessageFromOtherConnection(self, connection: socket):
         message_lenght = connection.recv(HEADER_SIZE)
@@ -35,10 +35,13 @@ class TcpSocket:
         return False, ""
 
     def sendMessage(self, message: str):
-        self.sendMessageToOtherSocket(self.socket, message)
+        self.sendMessageToOtherSocket(self.__socket, message)
 
 
     def sendMessageToOtherSocket(self, connection: socket, message: str):
         connection.send(decodeMessageWithFrame(message))
+
+    def close(self):
+        self.__socket.close()
 
 

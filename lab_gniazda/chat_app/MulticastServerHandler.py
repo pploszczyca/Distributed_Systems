@@ -7,7 +7,7 @@ class MulticastServerHandler:
         self.multicast_socket = MulticastSocket(server_address)
 
     def start(self):
-        Thread(target=self.__handleMulticastMessages).start()
+        Thread(target=self.__handleMulticastMessages, daemon=True).start()
 
     def __handleMulticastMessages(self):
         while True:

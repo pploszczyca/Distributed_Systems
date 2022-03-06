@@ -1,8 +1,20 @@
+import signal
+import sys
 from Constants import ASCII_ART, ASCII_ART_MULTICAST, CLOSE_MESSAGE, MULTICAST_ADDRESS, MULTICAST_MESSAGE_TYPE, SERVER_ADDRESS, UDP_MESSAGE_TYPE
 from MulticastClientHandler import MulticastClientHandler
 from TcpClientHandler import TcpClientHandler
 from UdpClientHandler import UdpClientHandler
 
+
+def signal_handler(sig, frame):
+    close_tcp_connection()
+    sys.exit(0)
+
+def close_tcp_connection():
+    tcp_client_handler.sendMessage(CLOSE_MESSAGE)
+    tcp_client_handler.close()
+
+signal.signal(signal.SIGINT, signal_handler)
 
 username = input("Enter username: ")
 
@@ -22,7 +34,9 @@ while True:
         udp_client_handler.sendMessage(ASCII_ART)
     elif input_data == MULTICAST_MESSAGE_TYPE:
         multicast_client_handler.sendMessage(ASCII_ART_MULTICAST)
+    elif input_data == CLOSE_MESSAGE:
+        close_tcp_connection()
+        break
     else:
         tcp_client_handler.sendMessage(input_data)
-        if input_data == CLOSE_MESSAGE:
-            break
+

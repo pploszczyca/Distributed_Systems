@@ -13,12 +13,16 @@ class TcpServerHandler:
         self.__tcp_socket = TcpSocket(server_address, True)
 
     def start(self):
-        threading.Thread(target=self.__startReceivingNewConnections).start()
+        threading.Thread(target=self.__startReceivingNewConnections, daemon=True).start()
 
     def __startReceivingNewConnections(self):
         while True:
             connection, new_username = self.__tcp_socket.acceptNewConnection()
+
+            self.__user_connections_lock.acquire()
             self.__user_connections[new_username] = connection
+            self.__user_connections_lock.release()
+
             threading.Thread(target=self.__handleConnection, args=(connection,new_username)).start()
 
     def __handleConnection(self, connection: socket, username: str):
@@ -42,5 +46,10 @@ class TcpServerHandler:
         self.__user_connections_lock.release()
 
     def __closeConnection(self, connection: socket, username: str):
+        self.__user_connections_lock.acquire()
         self.__user_connections.pop(username)
+        self.__user_connections_lock.release()
         connection.close()
+
+    def close(self):
+        self.__tcp_socket.close()

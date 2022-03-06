@@ -4,7 +4,7 @@ from threading import Thread
 
 class ClientHandler(ABC):
     def start(self):
-        Thread(target=self.receiveMessages).start()
+        Thread(target=self.receiveMessages, daemon=True).start()
 
     @abstractmethod
     def receiveMessages(self):
