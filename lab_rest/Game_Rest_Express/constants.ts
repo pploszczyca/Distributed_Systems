@@ -6,3 +6,4 @@ export const RAWG_GAME_ID = (gameTitle: String) => `https://api.rawg.io/api/game
 export const RAWG_GAME_DATA = (gameID: number) => `https://api.rawg.io/api/games/${gameID}?key=${process.env.RAWG_API_KEY}`
 export const GIANT_BOMB_GAME_ID = (gameTitle: String) => `https://www.giantbomb.com/api/search/?format=json&limit=1&query=${gameTitle}&resources=game&api_key=${process.env.GIANT_BOMB_API_KEY}`
 export const GIANT_BOMB_GAME_DATA = (gameID: number) => `https://www.giantbomb.com/api/game/${gameID}/?format=json&api_key=${process.env.GIANT_BOMB_API_KEY}`
+export const GIANT_BOMB_GAME_REVIEW = (reviewID: number) => `https://www.giantbomb.com/api/review/${reviewID}/?format=json&api_key=${process.env.GIANT_BOMB_API_KEY}`

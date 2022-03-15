@@ -6,7 +6,9 @@ html
         form(action='/form', method='post', class='m-3')
             div(class='field')
                 label(class='label')= 'Game title'
-                input(class='input' type='text' name='title')
+                .control 
+                    input(class='input' type='text' name='title')
+                p.help="For example: Grand Theft Auto V, The Witcher 3, Monster Hunter World etc."
 
             div(class='field is-grouped')
                 div(class='control')
