@@ -7,17 +7,18 @@ html
             h2="Results"
 
             table.table.is-striped 
-                tbody 
-                    tr 
-                        th="Title"
-                        td=title 
+                tbody
+                    if title != "" 
+                        tr 
+                            th="Title"
+                            td=title 
                     tr 
                         th="Cheapest Price Ever"
                         td=(cheapestPriceEver == 0 ? "Free" : cheapestPriceEver)
 
                     tr 
                         th="Current Best Price"
-                        td=currentBestDeal.storeName + " - " + currentBestDeal.price
+                        td=(currentBestDeal != null ? currentBestDeal.storeName + " - " + currentBestDeal.price : "No data")
 
                     tr 
                         th="Current Averange Price"
@@ -34,34 +35,42 @@ html
                         th="Averange Score"
                         td=avgScore
 
-                    tr 
-                        th="Averange Metacritic Score"
-                        td=avgMetacriticFromAllPlatforms
-                    tr 
-                        th="Best Metacritic Score"
-                        td=bestMetacriticStore
+                    if avgMetacriticFromAllPlatforms != 0
+                        tr 
+                            th="Averange Metacritic Score"
+                            td=avgMetacriticFromAllPlatforms
+
+                    if bestMetacriticStore != 0
+                        tr 
+                            th="Best Metacritic Score"
+                            td=bestMetacriticStore
+
                     tr 
                         th="Platforms"
                         td=platforms
-                    tr 
-                        th="Ammount of Characters in Giant Bomb Wiki"
-                        td=ammountOfCharacters
-                    tr
-                        th="Ammount of Locations in Giant Bomb Wiki"
-                        td=ammountOfLocations
 
-            
-            h2= "Deals"
-            table.table.is-striped  
-                thead 
-                    tr 
-                        th="Store"
-                        th="Current Price"
-                        th="Retail Price"
-                tbody 
-                    each deal in deals 
+                    if ammountOfCharacters != "No data"
                         tr 
-                            td=deal.storeName 
-                            td=deal.price 
-                            td=deal.retailPrice 
+                            th="Ammount of Characters in Giant Bomb Wiki"
+                            td=ammountOfCharacters
+
+                    if ammountOfLocations != "No data"
+                        tr
+                            th="Ammount of Locations in Giant Bomb Wiki"
+                            td=ammountOfLocations
+
+            if deals.lenght != 0
+                h2= "Deals"
+                table.table.is-striped  
+                    thead 
+                        tr 
+                            th="Store"
+                            th="Current Price"
+                            th="Retail Price"
+                    tbody 
+                        each deal in deals 
+                            tr 
+                                td=deal.storeName 
+                                td=deal.price 
+                                td=deal.retailPrice 
                 

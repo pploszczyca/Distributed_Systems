@@ -3,7 +3,7 @@ import { Response } from 'express-serve-static-core';
 import { CHEAPSHARK_GAME_DATA, CHEAPSHARK_GAME_ID, CHEAPSHARK_STORES_URL, GIANT_BOMB_GAME_DATA, GIANT_BOMB_GAME_ID, GIANT_BOMB_GAME_REVIEW, RAWG_GAME_DATA, RAWG_GAME_ID } from './constants';
 
 export async function startMakingRequests(gameTitle: string, serverResult: Response<any, Record<string, any>, number>) {
-    let urls = [
+    const urls = [
       CHEAPSHARK_STORES_URL,
       CHEAPSHARK_GAME_ID(gameTitle),
       RAWG_GAME_ID(gameTitle),
@@ -27,13 +27,19 @@ export async function startMakingRequests(gameTitle: string, serverResult: Respo
     gameDataGiantBomb: AxiosResponse<any, any>
   ) {
     const storesMap = new Map<number, string>()
-    const gameIDCheapShark = gameDataCheapShark.data[0].gameID
+
+    if(checkIfGameExists(gameDataCheapShark, gameDataRawg, gameDataGiantBomb)) {
+        serverResult.render("no_result")
+        return
+    }
+
+    const gameIDCheapShark = checkIfCheapSharkSearchIsGood(gameDataCheapShark) ? gameDataCheapShark.data[0].gameID : -1
     const gameIDRawg = gameDataRawg.data.results[0].id
     const gameIDGiantBomb = gameDataGiantBomb.data.results[0].id
   
     fillStoresMap(storesMap, storesDataCheapShark)
   
-    let urls = [
+    const urls = [
       CHEAPSHARK_GAME_DATA(gameIDCheapShark),
       RAWG_GAME_DATA(gameIDRawg),
       GIANT_BOMB_GAME_DATA(gameIDGiantBomb)
@@ -43,7 +49,15 @@ export async function startMakingRequests(gameTitle: string, serverResult: Respo
       .all(urls.map(fetchUrl))
       .then(axios.spread((cheapsharkData, rawgData, giantBombData) => processGamesData(serverResult, storesMap, gameIDCheapShark, cheapsharkData, rawgData, giantBombData)))
   }
-  
+
+  function checkIfGameExists(gameDataCheapShark: AxiosResponse<any, any>, 
+    gameDataRawg: AxiosResponse<any, any>,
+    gameDataGiantBomb: AxiosResponse<any, any>) {
+    return !checkIfCheapSharkSearchIsGood(gameDataCheapShark) || gameDataRawg.data.count == 0 || gameDataGiantBomb.data.number_of_total_results == 0
+  }
+
+  const checkIfCheapSharkSearchIsGood = (cheapShark: AxiosResponse<any, any>) => Object.keys(cheapShark.data).length !== 0
+
   function fillStoresMap(storesMap: Map<number, string>, storesDataCheapShark: AxiosResponse<any, any>) {
     storesDataCheapShark.data.forEach((element: { storeID: number; storeName: string; }) => {
       storesMap.set(element.storeID, element.storeName)
@@ -58,9 +72,9 @@ export async function startMakingRequests(gameTitle: string, serverResult: Respo
     rawgResponse: AxiosResponse<any, any>,
     giantBombResponse: AxiosResponse<any, any>
   ) {
-    const cheapsharkData = cheapsharkResponse.data[gameIDCheapShark]
+    const cheapsharkData = checkIfCheapSharkSearchIsGood(cheapsharkResponse) ? cheapsharkResponse.data[gameIDCheapShark] : defaultCheapShark
     const rawgData = rawgResponse.data
-    const giantBombData = giantBombResponse.data
+    const giantBombData = giantBombResponse.data.results
     const deals: Array<Deal> = makeDealsArray(cheapsharkData, storesMap)
     const scoresArray: Array<number> = [rawgData.rating, calculateAverangeMetacriticScore(rawgData)/20]
 
@@ -73,14 +87,24 @@ export async function startMakingRequests(gameTitle: string, serverResult: Respo
         currentAvgPrice: calculateAverangePrice(deals).toFixed(2),
         deals: deals,
         description: rawgData.description,
-        avgMetacriticFromAllPlatforms: calculateAverangeMetacriticScore(rawgData),
+        avgMetacriticFromAllPlatforms: calculateAverangeMetacriticScore(rawgData).toFixed(2),
         bestMetacriticStore: maxMetascoreFromAllPlatforms(rawgData),
         avgScore: calculateAverange(scoresArray).toFixed(2),
-        releaseDate: giantBombData.results.original_release_date,
-        platforms: giantBombData.results.platforms.map((platform: { name: string; }) => platform.name),
-        ammountOfCharacters: giantBombData.results.characters !== null ? giantBombData.results.characters.length : "No data",
-        ammountOfLocations: giantBombData.results.locations !== null ? giantBombData.results.locations.length : "No data"
+        releaseDate: giantBombData.original_release_date,
+        platforms: giantBombData.platforms.map((platform: { name: string; }) => platform.name),
+        ammountOfCharacters: giantBombData.characters !== null ? giantBombData.characters.length : "No data",
+        ammountOfLocations: giantBombData.locations !== null ? giantBombData.locations.length : "No data"
     })
+}
+
+const defaultCheapShark = {
+    info: {
+        title: ""
+    },
+    cheapestPriceEver: {
+        price: ""
+    },
+    deals: []
 }
   
   interface Deal {
@@ -110,8 +134,8 @@ export async function startMakingRequests(gameTitle: string, serverResult: Respo
   }
 
   async function addScoreReviewFromGiantBomb(scoresArray: Array<number>, giantBombData: any) {
-    if(giantBombData.results.reviews != undefined) {
-        scoresArray.push((await fetchUrl(GIANT_BOMB_GAME_REVIEW(giantBombData.results.reviews[0].id))).data.results.score)
+    if(giantBombData.reviews != undefined) {
+        scoresArray.push((await fetchUrl(GIANT_BOMB_GAME_REVIEW(giantBombData.reviews[0].id))).data.results.score)
     }
   }
   
