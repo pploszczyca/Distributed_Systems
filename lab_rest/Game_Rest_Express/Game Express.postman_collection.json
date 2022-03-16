@@ -1,0 +1,406 @@
+{
+	"info": {
+		"_postman_id": "d8556d1e-4934-4aa5-b3b8-7ce5836b7ad0",
+		"name": "Game Express",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "My API",
+			"item": [
+				{
+					"name": "GTA V",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "The Witcher 3",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Dead Cells",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "No title found: Fifa 2022",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Serwer - Outside Serwer",
+			"item": [
+				{
+					"name": "CheapShark",
+					"item": [
+						{
+							"name": "Get all stores",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://www.cheapshark.com/api/1.0/games?id=612",
+									"protocol": "https",
+									"host": [
+										"www",
+										"cheapshark",
+										"com"
+									],
+									"path": [
+										"api",
+										"1.0",
+										"games"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "612"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get GTA V gameID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=20",
+									"protocol": "https",
+									"host": [
+										"www",
+										"cheapshark",
+										"com"
+									],
+									"path": [
+										"api",
+										"1.0",
+										"deals"
+									],
+									"query": [
+										{
+											"key": "storeID",
+											"value": "1"
+										},
+										{
+											"key": "upperPrice",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GTA V Deals",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://www.cheapshark.com/api/1.0/games?ids=216150",
+									"protocol": "https",
+									"host": [
+										"www",
+										"cheapshark",
+										"com"
+									],
+									"path": [
+										"api",
+										"1.0",
+										"games"
+									],
+									"query": [
+										{
+											"key": "ids",
+											"value": "216150"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fifa 2022 not found",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "RAWG API",
+					"item": [
+						{
+							"name": "Search GTA V",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "GTA V Descriptions",
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "query",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "88817dfedfcd4f0986c30e02fc14480d",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "key",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.rawg.io/api/games/3498",
+									"protocol": "https",
+									"host": [
+										"api",
+										"rawg",
+										"io"
+									],
+									"path": [
+										"api",
+										"games",
+										"3498"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "GiantBomb",
+					"item": [
+						{
+							"name": "Search for Grand Theft Auto V",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Get Grand Theft Auto V game data",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "GTA Review",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Test variables', () => {",
+											"    const responseJson = pm.response.json();",
+											"",
+											"    pm.expect(responseJson.results.score).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "query",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "b32456dd70e4cfbecb4de899567af9355e9918e0",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "api_key",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://www.giantbomb.com/api/review/598/?format=json",
+									"protocol": "https",
+									"host": [
+										"www",
+										"giantbomb",
+										"com"
+									],
+									"path": [
+										"api",
+										"review",
+										"598",
+										""
+									],
+									"query": [
+										{
+											"key": "format",
+											"value": "json"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be valid and have a body\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});"
+						]
+					}
+				}
+			]
+		}
+	]
+}
