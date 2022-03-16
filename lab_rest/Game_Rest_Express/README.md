@@ -1,5 +1,8 @@
 # Game REST API
 Form is under `localhost:3000/form`
+
+## Heroku URL
+https://rest-game-api.herokuapp.com/form
 ## How to run
 ### With npm
 Install packages and run app
