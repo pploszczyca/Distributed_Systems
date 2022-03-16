@@ -1,10 +1,10 @@
 import bodyParser from 'body-parser';
 import express from 'express'
-import { PORT } from './constants';
 import { startMakingRequests } from './processingData';
 
 require('dotenv').config()
 
+const PORT = 3000
 const app = express()
 
 app.set('view engine', 'pug');
