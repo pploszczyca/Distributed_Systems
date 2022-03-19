@@ -1,4 +1,4 @@
-package com.example.classess;
+package com.example.classes;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

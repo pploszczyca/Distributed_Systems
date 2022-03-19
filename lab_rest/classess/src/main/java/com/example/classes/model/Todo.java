@@ -1,4 +1,4 @@
-package com.example.classes;
+package com.example.classes.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -9,7 +9,17 @@ public class Todo {
     private String description;
 
     public Todo() {
+    }
 
+    public Todo(String id, String summary) {
+        this.id = id;
+        this.summary = summary;
+    }
+
+    public Todo(String id, String summary, String description) {
+        this.id = id;
+        this.summary = summary;
+        this.description = description;
     }
 
     public String getId() {
