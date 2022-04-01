@@ -1,7 +1,7 @@
 package agh.edu.pl
 package supplier
 
-import Constants.CONFIRM_ORDER_EXCHANGE
+import Constants.{ADMIN_EXCHANGE, CONFIRM_ORDER_EXCHANGE, SUPPLIER_FROM_ADMIN_KEY, TEAM_FROM_ADMIN_KEY}
 import models.{Equipment, Order, OrderConfirmation}
 import queue_services.{ExchangeQueue, SendOrderQueue}
 
@@ -12,22 +12,31 @@ import java.nio.charset.StandardCharsets
 class Supplier(private val name: String, private val ownedEquipmentList: List[Equipment]) {
   private var ordersCounter = 0
   private val sendOrderQueue = new SendOrderQueue()
-  private val defaultConsumer = new DefaultConsumer(sendOrderQueue.channel) {
+
+  private val defaultOrderConsumer = new DefaultConsumer(sendOrderQueue.channel) {
     override def handleDelivery(consumerTag: String, envelope: Envelope, properties: AMQP.BasicProperties, body: Array[Byte]): Unit = {
       val message = String(body, StandardCharsets.UTF_8)
 
       val order = convertOrderMessage(message)
 
       if checkIfOrderCanBeAccept(order) then
-        sendOrderQueue.acceptMessageDeliver(envelope)
-        println(s"Accepted: $order")
-        sendOrderConfirmation(order)
+        acceptAndSetConfirmation(envelope, order)
       else
         sendOrderQueue.rejectMessageDeliver(envelope)
     }
   }
 
-  sendOrderQueue.setUpToListen(defaultConsumer)
+  sendOrderQueue.setUpToListen(defaultOrderConsumer)
+  setUpAdminMessagesListener()
+
+  private def setUpAdminMessagesListener(): Unit =
+    DefaultPrinterConsumer.setPrinterToChannelService(ExchangeQueue(ADMIN_EXCHANGE, BuiltinExchangeType.TOPIC, SUPPLIER_FROM_ADMIN_KEY))
+
+  private def acceptAndSetConfirmation(envelope: Envelope, order: Order): Unit = {
+    sendOrderQueue.acceptMessageDeliver(envelope)
+    println(s"Accepted: $order")
+    sendOrderConfirmation(order)
+  }
 
   private def convertOrderMessage(message: String): Order = {
     val splittedMessage = message.split(Constants.MESSAGE_SPLITTER)

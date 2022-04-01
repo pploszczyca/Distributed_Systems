@@ -1,7 +1,7 @@
 package agh.edu.pl
 package team
 
-import Constants.CONFIRM_ORDER_EXCHANGE
+import Constants.{ADMIN_EXCHANGE, CONFIRM_ORDER_EXCHANGE, TEAM_FROM_ADMIN_KEY}
 import models.{Equipment, Order}
 import queue_services.{ExchangeQueue, SendOrderQueue}
 
@@ -13,15 +13,11 @@ class Team(private val teamName: String) {
   private val sendOrderQueue = new SendOrderQueue()
   private val confirmOrderQueue = ExchangeQueue(CONFIRM_ORDER_EXCHANGE, BuiltinExchangeType.TOPIC, teamName)
 
-  private val defaultConsumer = new DefaultConsumer(sendOrderQueue.channel) {
-    override def handleDelivery(consumerTag: String, envelope: Envelope, properties: AMQP.BasicProperties, body: Array[Byte]): Unit = {
-      val message = String(body, StandardCharsets.UTF_8)
-      println(message)
-    }
-  }
+  DefaultPrinterConsumer.setPrinterToChannelService(confirmOrderQueue)
+  setUpAdminMessagesListener()
 
-  confirmOrderQueue.setUpToListen(defaultConsumer)
+  private def setUpAdminMessagesListener(): Unit =
+    DefaultPrinterConsumer.setPrinterToChannelService(ExchangeQueue(ADMIN_EXCHANGE, BuiltinExchangeType.TOPIC, TEAM_FROM_ADMIN_KEY))
 
-  def sendOrder(equipment: Equipment): Unit = sendOrderQueue.sendMessage(Order(teamName, equipment))
-
+  def sendOrder(equipment: Equipment): Unit = sendOrderQueue.sendMessage(Order(teamName, equipment).toString)
 }
