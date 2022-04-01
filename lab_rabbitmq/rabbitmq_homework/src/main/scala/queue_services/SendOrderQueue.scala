@@ -1,30 +1,25 @@
 package agh.edu.pl
+package queue_services
 
 import models.Order
 
 import agh.edu.pl.Constants
 import com.rabbitmq.client.{Channel, Connection, ConnectionFactory, DefaultConsumer, Envelope}
 
-class SendOrderQueue(private val queueName: String = Constants.ORDER_QUEUE) {
-  var channel: Channel = null
-  private var connection: Connection = null
-
-  initQueue()
-
-  private def initQueue(): Unit = {
-    val factory = new ConnectionFactory()
-    factory.setHost(Constants.HOST)
-    connection = factory.newConnection()
-    channel = connection.createChannel()
+class SendOrderQueue(private val queueName: String = Constants.ORDER_QUEUE) extends ChannelService {
+  override protected def initQueue(): Unit = {
+    super.initQueue()
     channel.queueDeclare(queueName, false, false, false, null)
   }
 
-  def setUpToListen(defaultConsumer: DefaultConsumer): Unit = {
+  def sendMessage(order: Order): Unit = sendMessage(order.toString)
+
+  override def sendMessage(message: String): Unit = channel.basicPublish("", queueName, null, message.getBytes)
+
+  override def setUpToListen(defaultConsumer: DefaultConsumer): Unit = {
     channel.basicQos(Constants.MAX_SAME_ITEM_AMOUNT)
     channel.basicConsume(queueName, false, defaultConsumer)
   }
-
-  def sendOrder(order: Order): Unit = channel.basicPublish("", queueName, null, order.toString.getBytes)
 
   def acceptMessageDeliver(envelope: Envelope): Unit = channel.basicAck(envelope.getDeliveryTag, false)
 

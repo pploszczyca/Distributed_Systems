@@ -1,9 +1,10 @@
 package agh.edu.pl
 package supplier
 
+import Constants.CONFIRM_ORDER_EXCHANGE
 import models.{Equipment, Order, OrderConfirmation}
+import queue_services.{ExchangeQueue, SendOrderQueue}
 
-import agh.edu.pl.Constants.CONFIRM_ORDER_EXCHANGE
 import com.rabbitmq.client.{AMQP, BuiltinExchangeType, DefaultConsumer, Envelope}
 
 import java.nio.charset.StandardCharsets

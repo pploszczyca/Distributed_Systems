@@ -1,10 +1,10 @@
 package agh.edu.pl
 package team
 
+import Constants.CONFIRM_ORDER_EXCHANGE
 import models.{Equipment, Order}
+import queue_services.{ExchangeQueue, SendOrderQueue}
 
-import agh.edu.pl.Constants.CONFIRM_ORDER_EXCHANGE
-import agh.edu.pl.ExchangeQueue
 import com.rabbitmq.client.{AMQP, BuiltinExchangeType, DefaultConsumer, Envelope}
 
 import java.nio.charset.StandardCharsets
@@ -19,9 +19,9 @@ class Team(private val teamName: String) {
       println(message)
     }
   }
-  
+
   confirmOrderQueue.setUpToListen(defaultConsumer)
 
-  def sendOrder(equipment: Equipment): Unit = sendOrderQueue.sendOrder(Order(teamName, equipment))
+  def sendOrder(equipment: Equipment): Unit = sendOrderQueue.sendMessage(Order(teamName, equipment))
 
 }

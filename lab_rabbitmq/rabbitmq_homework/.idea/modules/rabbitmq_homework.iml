@@ -14,5 +14,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.6:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala3-library_3:3.1.1:jar" level="project" />
+    <orderEntry type="library" name="amqp-client-5.14.2-javadoc" level="project" />
+    <orderEntry type="library" name="amqp-client-5.14.2" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.29-javadoc" level="project" />
   </component>
 </module>
