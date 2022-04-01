@@ -24,7 +24,7 @@ class SendOrderQueue(private val queueName: String = Constants.ORDER_QUEUE) {
     channel.basicConsume(queueName, false, defaultConsumer)
   }
 
-  def sendOrder(order: Order): Unit = channel.basicPublish("", queueName, null, s"${order.teamName}${Constants.MESSAGE_SPLITTER}${order.equipment.toString}".getBytes)
+  def sendOrder(order: Order): Unit = channel.basicPublish("", queueName, null, order.toString.getBytes)
 
   def acceptMessageDeliver(envelope: Envelope): Unit = channel.basicAck(envelope.getDeliveryTag, false)
 

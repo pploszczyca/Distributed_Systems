@@ -1,4 +1,8 @@
 package agh.edu.pl
 package models
 
-case class OrderConfirmation(numberOfOrder: String, order: Order)
+import Constants.MESSAGE_SPLITTER
+
+case class OrderConfirmation(numberOfOrder: String, order: Order){
+  override def toString: String = s"$numberOfOrder$MESSAGE_SPLITTER${order.toString}"
+}

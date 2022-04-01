@@ -1,9 +1,10 @@
 package agh.edu.pl
 package supplier
 
-import models.{Equipment, Order}
+import models.{Equipment, Order, OrderConfirmation}
 
-import com.rabbitmq.client.{AMQP, DefaultConsumer, Envelope}
+import agh.edu.pl.Constants.CONFIRM_ORDER_EXCHANGE
+import com.rabbitmq.client.{AMQP, BuiltinExchangeType, DefaultConsumer, Envelope}
 
 import java.nio.charset.StandardCharsets
 
@@ -19,6 +20,7 @@ class Supplier(private val name: String, private val ownedEquipmentList: List[Eq
       if checkIfOrderCanBeAccept(order) then
         sendOrderQueue.acceptMessageDeliver(envelope)
         println(s"Accepted: $order")
+        sendOrderConfirmation(order)
       else
         sendOrderQueue.rejectMessageDeliver(envelope)
     }
@@ -32,6 +34,12 @@ class Supplier(private val name: String, private val ownedEquipmentList: List[Eq
   }
 
   private def checkIfOrderCanBeAccept(order: Order): Boolean = ownedEquipmentList.contains(order.equipment)
+
+  private def sendOrderConfirmation(order: Order): Unit =
+    ExchangeQueue(CONFIRM_ORDER_EXCHANGE, BuiltinExchangeType.TOPIC, order.teamName)
+      .sendMessage(makeOrderConfirmation(order).toString)
+
+  private def makeOrderConfirmation(order: Order): OrderConfirmation = OrderConfirmation(generateNewNumberOfOrder(), order)
 
   private def generateNewNumberOfOrder(): String = {
     ordersCounter += 1

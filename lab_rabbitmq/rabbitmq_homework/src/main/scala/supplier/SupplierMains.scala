@@ -5,12 +5,12 @@ import models.Equipment
 
 object SupplierMain {
   def main(args: Array[String]): Unit = {
-    Supplier("Supplier_1", List(Equipment.Oxygen, Equipment.Backpack))
+    Supplier("Supplier1", List(Equipment.Oxygen, Equipment.Backpack))
   }
 }
 
 object SecondSupplierMain {
   def main(args: Array[String]): Unit = {
-    Supplier("Supplier_2", List(Equipment.Oxygen, Equipment.Boots))
+    Supplier("Supplier2", List(Equipment.Oxygen, Equipment.Boots))
   }
 }
