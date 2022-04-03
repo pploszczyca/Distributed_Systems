@@ -21,7 +21,7 @@ class Admin {
       case '1' => sendMessage(message, ADMIN_TO_TEAM_KEY)
       case '2' => sendMessage(message, ADMIN_TO_SUPPLIER_KEY)
       case '3' => sendMessage(message, ADMIN_TO_EVERYONE_KEY)
-      case _ => println("Try make message again")
+      case _ => println("Try write message again")
 
   private def sendMessage(message: String, key: String): Unit =
     ExchangeQueue(ADMIN_EXCHANGE, BuiltinExchangeType.TOPIC, key).sendMessage(s"Admin:$message")

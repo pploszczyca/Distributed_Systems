@@ -6,8 +6,8 @@ import scala.io.StdIn.readLine
 
 object TeamMain {
   def main(args: Array[String]): Unit = {
-    val team = Team("TeamOne")
-    val neededEquipment = List(Equipment.Oxygen, Equipment.Oxygen, Equipment.Boots, Equipment.Boots, Equipment.Boots, Equipment.Boots, Equipment.Backpack, Equipment.Backpack, Equipment.Oxygen)
+    val team = Team("Team")
+    val neededEquipment = List(Equipment.Oxygen, Equipment.Oxygen, Equipment.Boots, Equipment.Boots, Equipment.Backpack, Equipment.Backpack)
 
     for
       equipment <- neededEquipment
@@ -18,7 +18,11 @@ object TeamMain {
 
 object TeamToWriteMain {
   def main(args: Array[String]): Unit = {
-    val team = Team("TeamSecond")
+    print("Set team name: ")
+
+    val team = Team(readLine())
+
+    println()
 
     while
       true
@@ -26,3 +30,4 @@ object TeamToWriteMain {
       team.sendOrder(Equipment.Oxygen.getByName(readLine()))
   }
 }
+

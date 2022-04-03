@@ -7,6 +7,8 @@ object AdminMain {
   def main(args: Array[String]): Unit = {
     val admin = Admin()
 
+    println("1 - Send to Teams\n2 - Send to Supplier\n3 - Send to everyone")
+
     while
       true
     do

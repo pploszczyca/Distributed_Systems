@@ -11,6 +11,7 @@ class SendOrderQueue(private val queueName: String = Constants.ORDER_QUEUE)
   extends ExchangeQueue(ORDER_EXCHANGE, BuiltinExchangeType.TOPIC, ORDER_KEY) {
 
   override def setUpToListen(defaultConsumer: DefaultConsumer): Unit = {
+    channel.queueDeclare(queueName, false, false, false, null)
     channel.queueBind(queueName, ORDER_EXCHANGE, ORDER_KEY)
     channel.basicQos(Constants.MAX_SAME_ITEM_AMOUNT)
     channel.basicConsume(queueName, false, defaultConsumer)
