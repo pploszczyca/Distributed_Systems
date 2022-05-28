@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package text;
+
+option java_package = "sr.grpc.gen";
+option java_outer_classname = "TextUtilities";
+
+message CountingArguments {
+  string inputText = 1;
+  string textToFind = 2;
+}
+
+message CountingOutput {
+  int32 countedRepeats = 1;
+}
+
+service TextService {
+  rpc CountRepeats (CountingArguments) returns (CountingOutput) {}
+}

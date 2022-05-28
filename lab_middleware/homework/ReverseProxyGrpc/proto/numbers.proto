@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package numbers;
+
+option java_package = "sr.grpc.gen";
+option java_outer_classname = "NumberUtilities";
+
+message Number {
+  double value = 1;
+}
+
+service NumberStreaming {
+  rpc nextSquaredNumbers (stream Number) returns (stream Number) {}
+}
+

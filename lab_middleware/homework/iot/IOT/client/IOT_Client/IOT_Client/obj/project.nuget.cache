@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Dg6+bCP0lxIA/KzXlnsmpJpVa0CR2fRPoJ30gYePghwreaRb4xLA2Yhm4UaGZWyQYll8pq0NVHCl9i6xuqAi/g==",
+  "success": true,
+  "projectFilePath": "/home/pepe/Projekty/Semestr6/Rozproszone/lab_middleware/homework/iot/IOT/client/IOT_Client/IOT_Client/IOT_Client.csproj",
+  "expectedPackageFiles": [
+    "/home/pepe/.nuget/packages/zeroc.ice.net/3.7.7/zeroc.ice.net.3.7.7.nupkg.sha512",
+    "/home/pepe/.nuget/packages/zeroc.icebuilder.msbuild/5.0.9/zeroc.icebuilder.msbuild.5.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}

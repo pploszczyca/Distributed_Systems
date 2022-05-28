@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <SliceCompile Include="../../../slice/config.ice" />
+        <SliceCompile Include="../../../slice/frige.ice" />
+        <SliceCompile Include="../../../slice/lamp.ice" />
+        <SliceCompile Include="../../../slice/weatherStation.ice" />
+      <PackageReference Include="zeroc.ice.net" Version="3.7.7" />
+      <PackageReference Include="zeroc.icebuilder.msbuild" Version="5.0.9" />
+    </ItemGroup>
+
+</Project>
