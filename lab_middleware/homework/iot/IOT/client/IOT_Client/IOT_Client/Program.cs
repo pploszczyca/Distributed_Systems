@@ -40,7 +40,7 @@ namespace IOT_Client
                             ParseFridge(fridgeService, splitLine);
                             break;
                         case "list":
-                            objectListService.PrintObjectNames();
+                            objectListService.PrintObjectNames(int.Parse(splitLine![1]));
                             break;
                         case "help":
                             PrintHelp();

@@ -5,7 +5,7 @@ namespace IOT_Client.Services;
 public class LampService
 {
     private readonly IotServerService _iotServerService;
-    private const int LampPort = 10001;
+    private const int LampPort = 11001;
 
     public LampService(IotServerService iotServerService)
     {

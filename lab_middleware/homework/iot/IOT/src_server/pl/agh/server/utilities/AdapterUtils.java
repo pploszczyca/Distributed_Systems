@@ -1,4 +1,4 @@
-package pl.agh.server;
+package pl.agh.server.utilities;
 
 import com.zeroc.Ice.Identity;
 import com.zeroc.Ice.Object;

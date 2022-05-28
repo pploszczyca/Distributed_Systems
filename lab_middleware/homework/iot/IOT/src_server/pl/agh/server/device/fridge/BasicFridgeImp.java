@@ -35,7 +35,7 @@ public class BasicFridgeImp implements BasicFridge {
         if (!isProductCanBeAdded(product)) {
             throw new NoSpace();
         }
-        if(!isDateProper(product.expirationDate)) {
+        if (!isDateProper(product.expirationDate)) {
             throw new BadDateFormat();
         }
 

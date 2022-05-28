@@ -9,12 +9,12 @@ public class ObjectListService
         _iotServerService = iotServerService;
     }
 
-    public void PrintObjectNames()
+    public void PrintObjectNames(int port)
     {
         Console.WriteLine("DEVICES LIST:");
 
         _iotServerService
-            .GetObjectInfoServicePrxHelper()
+            .GetObjectInfoServicePrxHelper(port)
             .getObjectInformations()
             .ToList()
             .ForEach(element => Console.WriteLine(element.category + "/" + element.name));

@@ -16,9 +16,9 @@ public class IotServerService
         _programArgs = programArgs;
     }
 
-    public ObjectInfoServicePrx GetObjectInfoServicePrxHelper()
+    public ObjectInfoServicePrx GetObjectInfoServicePrxHelper(int port)
     {
-        return ObjectInfoServicePrxHelper.checkedCast(GetObjectPrx(ObjectInfoServiceName, ObjectInfoServiceName, 10001));
+        return ObjectInfoServicePrxHelper.checkedCast(GetObjectPrx(ObjectInfoServiceName, ObjectInfoServiceName, port));
     }
 
     public WeatherStationPrx GetWeatherStationPrx(string categoryAndName, int port)

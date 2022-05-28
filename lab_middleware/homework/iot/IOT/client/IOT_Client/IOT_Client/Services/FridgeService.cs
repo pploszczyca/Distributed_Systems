@@ -5,7 +5,7 @@ namespace IOT_Client.Services;
 public class FridgeService
 {
     private readonly IotServerService _iotServerService;
-    private const int FridgePort = 10000;
+    private const int FridgePort = 11000;
 
     public FridgeService(IotServerService iotServerService)
     {

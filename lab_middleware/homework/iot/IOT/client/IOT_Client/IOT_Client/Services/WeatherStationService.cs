@@ -5,7 +5,7 @@ namespace IOT_Client.Services;
 public class WeatherStationService
 {
     private readonly IotServerService _iotServerService;
-    private const int WeatherStationPort = 10001;
+    private const int WeatherStationPort = 11001;
 
     public WeatherStationService(IotServerService iotServerService)
     {
