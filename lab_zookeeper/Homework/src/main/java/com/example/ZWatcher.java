@@ -2,8 +2,11 @@ package com.example;
 
 import java.io.IOException;
 import java.util.Optional;
+import org.apache.zookeeper.AddWatchMode;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.ZooKeeper;
 
 public class ZWatcher implements Watcher {
 
@@ -11,11 +14,17 @@ public class ZWatcher implements Watcher {
 
     private Optional<Process> childProcess = Optional.empty();
 
+    private final ZooKeeper zooKeeper;
+
+    public ZWatcher(ZooKeeper zooKeeper) {
+        this.zooKeeper = zooKeeper;
+
+        addWatch();
+    }
 
     @Override
     public void process(WatchedEvent event) {
         final var path = event.getPath();
-        System.out.println(path);
 
         if(event.getState() == Event.KeeperState.Expired) {
             return;
@@ -28,6 +37,29 @@ public class ZWatcher implements Watcher {
             }
         }
 
+        if(path.startsWith(Z_NODE)) {
+            addWatch();
+
+            switch (event.getType()) {
+                case NodeCreated, NodeDeleted -> printAllChildrenNumber();
+            }
+        }
+    }
+
+    private void printAllChildrenNumber() {
+        try {
+            System.out.println("CHILDREN NUMBER: " + zooKeeper.getAllChildrenNumber(Z_NODE));
+            nodeDFS(Z_NODE);
+        } catch (KeeperException | InterruptedException ignored) {
+        }
+    }
+
+    private void addWatch() {
+        try {
+            zooKeeper.addWatch(Z_NODE, AddWatchMode.PERSISTENT_RECURSIVE);
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startProcess() {
@@ -49,5 +81,16 @@ public class ZWatcher implements Watcher {
             }
         });
         childProcess = Optional.empty();
+    }
+
+    private void nodeDFS(String path) {
+        System.out.println(path);
+
+        try {
+            zooKeeper
+                    .getChildren(path, true)
+                    .forEach(childName -> nodeDFS(path + "/" + childName));
+        } catch (KeeperException | InterruptedException ignored) {
+        }
     }
 }

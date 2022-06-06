@@ -1,33 +1,41 @@
 package com.example;
 
 import java.io.IOException;
-import org.apache.zookeeper.AddWatchMode;
-import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
-public class Executor {
+public class Executor implements Runnable, Watcher {
 
-    private final ZooKeeper zooKeeper;
+    private static final String HOST_PORT = "127.0.0.1:2181";
+    private final ZWatcher zWatcher;
+
+    private boolean isRunning = true;
 
     public Executor() throws IOException {
-        final String hostPort = "127.0.0.1:2181";
-        final ZWatcher zWatcher = new ZWatcher();
-        zooKeeper = new ZooKeeper(hostPort, 3000, zWatcher);
-
-        addWatch();
+        final ZooKeeper zooKeeper = new ZooKeeper(HOST_PORT, 3000, this);
+        zWatcher = new ZWatcher(zooKeeper);
     }
 
-   private void addWatch() {
-        while(true) {
-            try {
-                zooKeeper.addWatch(ZWatcher.Z_NODE, AddWatchMode.PERSISTENT_RECURSIVE);
-            } catch (KeeperException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-   }
+    @Override
+    public void process(WatchedEvent event) {
+        zWatcher.process(event);
+    }
 
     public static void main(String[] args) throws IOException {
-        new Executor();
+        new Executor().run();
+    }
+
+    @Override
+    public void run() {
+        synchronized (this){
+            while(this.isRunning){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
