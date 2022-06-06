@@ -1,44 +1,53 @@
 package com.example;
 
-import org.apache.zookeeper.AsyncCallback;
+import java.io.IOException;
+import java.util.Optional;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
 
 public class ZWatcher implements Watcher {
 
     public static final String Z_NODE = "/z";
 
-    private final ZooKeeper zooKeeper;
+    private Optional<Process> childProcess = Optional.empty();
 
-    private final AsyncCallback.StatCallback statCallback;
-
-    public ZWatcher(ZooKeeper zooKeeper,
-                    AsyncCallback.StatCallback statCallback) {
-        this.zooKeeper = zooKeeper;
-        this.statCallback = statCallback;
-
-        zooKeeper.exists(Z_NODE, true, statCallback, null);
-    }
 
     @Override
     public void process(WatchedEvent event) {
         final var path = event.getPath();
         System.out.println(path);
 
+        if(event.getState() == Event.KeeperState.Expired) {
+            return;
+        }
 
-        if(event.getType() == Event.EventType.None) {
-            switch (event.getState()) {
-                case SyncConnected:
-                    break;
-                case Expired:
-                    break;
-            }
-        } else {
-            if(path != null && path.equals(Z_NODE)) {
-                zooKeeper.exists(Z_NODE, true, statCallback, null);
+        if(path.equals(Z_NODE)) {
+            switch (event.getType()) {
+                case NodeCreated -> startProcess();
+                case NodeDeleted -> endProcess();
             }
         }
 
+    }
+
+    private void startProcess() {
+        try {
+            System.out.println("Starting child");
+            childProcess = Optional.of(Runtime.getRuntime().exec("gedit"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void endProcess() {
+        childProcess.ifPresent(process -> {
+            System.out.println("Killing process");
+            process.destroy();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+            }
+        });
+        childProcess = Optional.empty();
     }
 }
