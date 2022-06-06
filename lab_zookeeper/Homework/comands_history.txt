@@ -1,0 +1,38 @@
+ 6433  ./zkServer.sh
+ 6434  l
+ 6435  ./zkServer.sh
+ 6436  sudo ./zkServer.sh
+ 6437  ./zkServer.sh start
+ 6438  ./zkCli.sh -server 127.0.0.1:2181
+ 6439  ps
+ 6440  ./zkCli.sh -server 127.0.0.1:2181
+ 6441  clear
+ 6442  ./zkCli.sh -server 127.0.0.1:2181
+ 6443  vsc
+ 6444  mkdir zk[1-3]
+ 6445  mkdir zk{1-3}
+ 6446  mkdir zk[1,2,3]
+ 6447  mkdir zk1
+ 6448  mkdir zk2
+ 6449  mkdir zk3
+ 6450  touch myid
+ 6451  ./zkServer.sh start ../conf/zoo1.cfg ../conf/zoo2.cfg ../conf/zoo3.cfg
+ 6452  ./zkCli.sh -server 127.0.0.1:2191
+ 6453  ./zkCli.sh -server 127.0.0.1:2192
+ 6454  ./zkCli.sh -server 127.0.0.1:2193
+ 6455  ./zkCli.sh -server 127.0.0.1:2888
+ 6456  ./zkCli.sh -server 127.0.0.1:2191
+ 6457  ./zkServer.sh stop
+ 6458  ./zkServer.sh start ../conf/zoo1.cfg
+ 6459  kill 22227
+ 6460  ./zkServer.sh start ../conf/zoo1.cfg
+ 6461  ./zkServer.sh start ../conf/zoo2.cfg
+ 6462  ./zkServer.sh start ../conf/zoo3.cfg
+ 6463  echo stat | nc localhost 2181 | grep Mode
+ 6464  echo stat | nc localhost 2191 | grep Mode
+ 6465  echo stat | nc localhost 2192 | grep Mode
+ 6466  echo srvr | nc localhost 2192 | grep Mode
+ 6467  echo srvr | nc localhost 2191 | grep Mode
+ 6468  echo srvr | nc localhost 2192 | grep Mode
+ 6469  echo srvr | nc localhost 2193 | grep Mode
+ 6470  neofetch
