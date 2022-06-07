@@ -57,8 +57,7 @@ public class ZWatcher implements Watcher {
     private void addWatch() {
         try {
             zooKeeper.addWatch(Z_NODE, AddWatchMode.PERSISTENT_RECURSIVE);
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (KeeperException | InterruptedException ignored) {
         }
     }
 
