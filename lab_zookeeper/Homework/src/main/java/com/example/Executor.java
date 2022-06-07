@@ -22,7 +22,9 @@ public class Executor implements Runnable, Watcher {
     public Executor() throws IOException {
         final ZooKeeper zooKeeper = new ZooKeeper(HOST_PORT, SESSION_TIMEOUT, this);
         zWatcher = new ZWatcher(zooKeeper);
+
         changeClientCnxnLogging();
+        commandListenerThread(zooKeeper);
     }
 
     @Override
@@ -49,5 +51,9 @@ public class Executor implements Runnable, Watcher {
 
     private void changeClientCnxnLogging() {
         ((Logger) LoggerFactory.getLogger(ClientCnxn.class)).setLevel(Level.WARN);
+    }
+
+    private void commandListenerThread(ZooKeeper zooKeeper) {
+        new CommandListenerThread(zooKeeper, ZWatcher.Z_NODE).run();
     }
 }

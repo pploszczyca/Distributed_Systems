@@ -49,7 +49,6 @@ public class ZWatcher implements Watcher {
     private void printAllChildrenNumber() {
         try {
             System.out.println("CHILDREN NUMBER: " + zooKeeper.getAllChildrenNumber(Z_NODE));
-            nodeDFS(Z_NODE);
         } catch (KeeperException | InterruptedException ignored) {
         }
     }
@@ -80,16 +79,5 @@ public class ZWatcher implements Watcher {
             }
         });
         childProcess = Optional.empty();
-    }
-
-    private void nodeDFS(String path) {
-        System.out.println(path);
-
-        try {
-            zooKeeper
-                    .getChildren(path, true)
-                    .forEach(childName -> nodeDFS(path + "/" + childName));
-        } catch (KeeperException | InterruptedException ignored) {
-        }
     }
 }
