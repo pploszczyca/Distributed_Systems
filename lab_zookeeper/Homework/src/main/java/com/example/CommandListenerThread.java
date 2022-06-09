@@ -10,6 +10,8 @@ public class CommandListenerThread implements Runnable{
 
     private final String dfsStartPath;
 
+    private boolean isRunning = true;
+
     public CommandListenerThread(ZooKeeper zooKeeper, String dfsStartPath) {
         this.zooKeeper = zooKeeper;
         this.dfsStartPath = dfsStartPath;
@@ -18,7 +20,7 @@ public class CommandListenerThread implements Runnable{
     private void commandLoop() {
         final var scanner = new Scanner(System.in);
 
-        while (true) {
+        while (isRunning) {
             if(scanner.nextLine().equals("dfs")) {
                 try {
                     zooKeeper.getAllChildrenNumber(dfsStartPath);
@@ -44,5 +46,9 @@ public class CommandListenerThread implements Runnable{
     @Override
     public void run() {
         commandLoop();
+    }
+
+    public void close() {
+        isRunning = false;
     }
 }

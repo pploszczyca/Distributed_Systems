@@ -11,24 +11,38 @@ import org.slf4j.LoggerFactory;
 
 public class Executor implements Runnable, Watcher {
 
-    private static final String HOST_PORT = "127.0.0.1:2191";
+    private static final String HOST_URL = "127.0.0.1:2191";
 
     private static final int SESSION_TIMEOUT = 3000;
 
     private final ZWatcher zWatcher;
 
+    private final ZooKeeper zooKeeper;
+
+    private final CommandListenerThread commandListenerThread;
+
     private boolean isRunning = true;
 
     public Executor() throws IOException {
-        final ZooKeeper zooKeeper = new ZooKeeper(HOST_PORT, SESSION_TIMEOUT, this);
+        zooKeeper = new ZooKeeper(HOST_URL, SESSION_TIMEOUT, this);
         zWatcher = new ZWatcher(zooKeeper);
+        commandListenerThread = new CommandListenerThread(zooKeeper, ZWatcher.Z_NODE);
 
         changeClientCnxnLogging();
-        commandListenerThread(zooKeeper);
+        commandListenerThread();
     }
 
     @Override
     public void process(WatchedEvent event) {
+        switch (event.getState()) {
+            case Disconnected, AuthFailed, Closed -> {
+                synchronized (this) {
+                    isRunning=false;
+                    notifyAll();
+                }
+            }
+        }
+
         zWatcher.process(event);
     }
 
@@ -47,13 +61,21 @@ public class Executor implements Runnable, Watcher {
                 }
             }
         }
+
+
+        commandListenerThread.close();
+        try {
+            zooKeeper.close();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void changeClientCnxnLogging() {
         ((Logger) LoggerFactory.getLogger(ClientCnxn.class)).setLevel(Level.WARN);
     }
 
-    private void commandListenerThread(ZooKeeper zooKeeper) {
-        new CommandListenerThread(zooKeeper, ZWatcher.Z_NODE).run();
+    private void commandListenerThread() {
+        new Thread(commandListenerThread).start();
     }
 }

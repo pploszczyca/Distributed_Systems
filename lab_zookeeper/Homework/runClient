@@ -1,0 +1,6 @@
+#!/bin/bash
+
+CLI_PATH=/home/pepe/Projekty/Semestr6/Rozproszone/lab_zookeeper/Classes/apache-zookeeper-3.8.0-bin/bin/zkCli.sh;
+PORT=$1     # Ports for zookeeper servers: 2191, 2192, 2193
+
+$CLI_PATH -server "127.0.0.1:${PORT}"
