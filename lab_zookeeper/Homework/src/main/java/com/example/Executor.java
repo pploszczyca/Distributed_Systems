@@ -62,7 +62,6 @@ public class Executor implements Runnable, Watcher {
             }
         }
 
-
         commandListenerThread.close();
         try {
             zooKeeper.close();
